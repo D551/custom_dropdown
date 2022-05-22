@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
+import { formatManagersData } from './ManagersDropDownHelper'
 
 import './ManagersDropDown.scss';
 
@@ -13,37 +14,65 @@ const ManagersDropDown = () => {
     useEffect(() => {
         axios.get(`https://gist.githubusercontent.com/daviferreira/41238222ac31fe36348544ee1d4a9a5e/raw/5dc996407f6c9a6630bfcec56eee22d4bc54b518/employees.json`)
             .then(res => {
-                const managers = res.data;
-                setManagersData(managers.data);
-                _setManagersData(managers.data);
+                const managers = formatManagersData(res.data);
+                setManagersData(managers);
+                _setManagersData(managers);
             })
     }, [])
 
     const getSeletedListText = (e) => {
-        setTextValue(e.target.innerHTML)
-        setShowDropdown(false)
+        setTextValue(e.target.value);
+        setShowDropdown(false);
     }
 
     const getContacts = (info) => {
         return (
-            <div
+            <button
                 className='list-card'
                 key={info.id}
-                onClick={getSeletedListText}
+                onClick={!info.notClickable && getSeletedListText}
+                value={info.name}
             >
-                <div style={{ border: '1px solid', margin: 'auto' }}>{info.firstName[0] + info.lastName[0]}</div>
-                {info.name}
-            </div >
+
+                {
+                    info.firstName && info.lastName &&
+                    < span className="div_name" style={{ background: info.profileColor }}>
+                        {info.firstName[0] + info.lastName[0]}
+                    </span>
+                }
+                <span className="span_name">
+                    <div className='name'>{info.name}</div>
+                    <div className="mail">{info.email}</div>
+                </span>
+            </button >
         )
+    }
+
+    const filterList = (options, searchTest) => {
+        const filteredList = options.filter((option) => {
+            return option.name.trim().toLowerCase().includes(searchTest.toLowerCase())
+        })
+        return filteredList
     }
 
     const onTextChange = (e) => {
         setTextValue(e.target.value)
         if (e.target.value.length) {
-            const filteredList = managerData.filter((manager) => {
-                return manager.attributes.name.toLowerCase().includes(e.target.value.toLowerCase())
-            })
-            _setManagersData(filteredList)
+            const searchedlist = filterList(managerData, e.target.value.toLowerCase());
+            if (searchedlist.length) {
+                console.log(searchedlist)
+                _setManagersData(searchedlist)
+            } else {
+                const noUserFoundData = {
+                    email: "",
+                    id: "0",
+                    name: "No User Found !!",
+                    profileColor: "rgb(220 221 227)",
+                    notClickable: true
+                }
+                _setManagersData([noUserFoundData])
+            }
+
         } else {
             _setManagersData(managerData)
 
@@ -52,34 +81,31 @@ const ManagersDropDown = () => {
 
     const onTextBoxFocus = () => {
         if (textValue.length) {
-            const filteredList = managerData.filter((manager) => {
-                return manager.attributes.name.toLowerCase().includes(textValue.toLowerCase())
-            })
-            _setManagersData(filteredList)
+            _setManagersData(filterList(managerData, textValue.toLowerCase()))
         }
         setShowDropdown(true)
     }
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div className='dropdown-container'>
             <input type="text"
                 className='inputBox'
                 onFocus={onTextBoxFocus}
-                //onBlur={() => { setShowDropdown(false) }}
                 onChange={onTextChange}
                 value={textValue}
                 placeholder="Choose Manager"
             />
-            {showDropdown &&
+            {
+                showDropdown &&
                 <div className='list-container'>
                     {
                         _managerData?.map((manager) => {
-                            return getContacts(manager.attributes)
+                            return getContacts(manager)
                         })
                     }
                 </div>
             }
-        </div>
+        </div >
     )
 };
 
