@@ -1,31 +1,26 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import axios from 'axios';
-import { formatManagersData } from './ManagersDropDownHelper'
 
-import './ManagersDropDown.scss';
+import './DropDown.scss';
 
-const ManagersDropDown = () => {
-    const [managerData, setManagersData] = React.useState([]);
-    const [_managerData, _setManagersData] = React.useState([]);
+const ManagersDropDown = (
+    {
+        options,
+        placeholder,
+        onChange
+    }
+) => {
+    const [_options, _setOptions] = React.useState(options);
     const [showDropdown, setShowDropdown] = React.useState(false);
     const [textValue, setTextValue] = React.useState('');
-
-    useEffect(() => {
-        axios.get(`https://gist.githubusercontent.com/daviferreira/41238222ac31fe36348544ee1d4a9a5e/raw/5dc996407f6c9a6630bfcec56eee22d4bc54b518/employees.json`)
-            .then(res => {
-                const managers = formatManagersData(res.data);
-                setManagersData(managers);
-                _setManagersData(managers);
-            })
-    }, [])
 
     const getSeletedListText = (e) => {
         setTextValue(e.target.value);
         setShowDropdown(false);
+        onChange();
     }
 
-    const getContacts = (info) => {
+    const createOptionsList = (info) => {
         return (
             <button
                 className='list-card'
@@ -33,18 +28,17 @@ const ManagersDropDown = () => {
                 onClick={!info.notClickable && getSeletedListText}
                 value={info.name}
             >
-
                 {
                     info.firstName && info.lastName &&
-                    < span className="div_name" style={{ background: info.profileColor }}>
+                    < span className="color-icon" style={{ background: info.profileColor }}>
                         {info.firstName[0] + info.lastName[0]}
                     </span>
                 }
-                <span className="span_name">
+                <span className="users-info">
                     <div className='name'>{info.name}</div>
                     <div className="mail">{info.email}</div>
                 </span>
-            </button >
+            </button>
         )
     }
 
@@ -58,10 +52,9 @@ const ManagersDropDown = () => {
     const onTextChange = (e) => {
         setTextValue(e.target.value)
         if (e.target.value.length) {
-            const searchedlist = filterList(managerData, e.target.value.toLowerCase());
+            const searchedlist = filterList(options, e.target.value.toLowerCase());
             if (searchedlist.length) {
-                console.log(searchedlist)
-                _setManagersData(searchedlist)
+                _setOptions(searchedlist)
             } else {
                 const noUserFoundData = {
                     email: "",
@@ -70,18 +63,18 @@ const ManagersDropDown = () => {
                     profileColor: "rgb(220 221 227)",
                     notClickable: true
                 }
-                _setManagersData([noUserFoundData])
+                _setOptions([noUserFoundData])
             }
 
         } else {
-            _setManagersData(managerData)
+            _setOptions(options)
 
         }
     }
 
     const onTextBoxFocus = () => {
         if (textValue.length) {
-            _setManagersData(filterList(managerData, textValue.toLowerCase()))
+            _setOptions(filterList(options, textValue.toLowerCase()))
         }
         setShowDropdown(true)
     }
@@ -93,14 +86,14 @@ const ManagersDropDown = () => {
                 onFocus={onTextBoxFocus}
                 onChange={onTextChange}
                 value={textValue}
-                placeholder="Choose Manager"
+                placeholder={placeholder}
             />
             {
                 showDropdown &&
                 <div className='list-container'>
                     {
-                        _managerData?.map((manager) => {
-                            return getContacts(manager)
+                        _options?.map((manager) => {
+                            return createOptionsList(manager)
                         })
                     }
                 </div>
@@ -110,9 +103,15 @@ const ManagersDropDown = () => {
 };
 
 ManagersDropDown.propTypes = {
+    options: PropTypes.array,
+    placeholder: PropTypes.string,
+    onChange: PropTypes.func,
 };
 
 ManagersDropDown.defaultProps = {
+    options: [],
+    placeholder: '',
+    onChange: () => { },
 };
 
 export default ManagersDropDown;
