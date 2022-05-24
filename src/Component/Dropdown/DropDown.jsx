@@ -24,15 +24,15 @@ const ManagersDropDown = (
     }
 
     const onKeyDown = (e) => {
-        const index = options.findIndex(x => {
+        const index = _options.findIndex(x => {
             return x.id === focusedElement;
         });
         if (e.which === 40) {
-            const selected = options[index + 1]?.id;
+            const selected = _options[index + 1]?.id;
             selected && document.getElementById(selected).focus();
         }
         else if (e.which === 38) {
-            const selected = options[index - 1]?.id
+            const selected = _options[index - 1]?.id
             selected && document.getElementById(selected).focus();
         }
     };
@@ -108,7 +108,7 @@ const ManagersDropDown = (
                     value={textValue}
                     placeholder={placeholder}
                     data-testid="input-box"
-                    onKeyDown={() => { document.getElementById(options[0].id).focus() }}
+                    onKeyDown={(e) => { e.which === 40 && document.getElementById(_options[0].id).focus() }}
                 />
                 <i className={showDropdown ? 'arrow up' : 'arrow down'}
                     onClick={() => { setShowDropdown(!showDropdown) }}
