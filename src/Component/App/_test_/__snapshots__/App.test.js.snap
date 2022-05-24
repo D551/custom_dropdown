@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should render App.js 1`] = `
+<DocumentFragment>
+  <div
+    class="App"
+  >
+    0
+  </div>
+</DocumentFragment>
+`;
+
+exports[`should test App.jsx should render App.js 1`] = `
+<DocumentFragment>
+  <div
+    class="App"
+  >
+    0
+  </div>
+</DocumentFragment>
+`;

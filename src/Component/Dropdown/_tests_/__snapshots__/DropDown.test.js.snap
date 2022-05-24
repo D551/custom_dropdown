@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should test the DropDown component should render dropDown 1`] = `
+<DocumentFragment>
+  <div
+    class="dropdown-container"
+  >
+    <div
+      class="inputWrap"
+    >
+      <input
+        class="inputBox"
+        data-testid="input-box"
+        placeholder=""
+        type="text"
+        value=""
+      />
+      <i
+        class="arrow down"
+      />
+    </div>
+  </div>
+</DocumentFragment>
+`;

@@ -7,7 +7,7 @@ function getRandomColor() {
     return color;
 }
 
-export const formatManagersData = (response) => {
+export const formatManagersData = (response, _getRandomColor = getRandomColor) => {
     const formattedResponse = [];
     response.data.forEach((data) => {
         const { firstName, lastName, name } = data.attributes
@@ -16,8 +16,8 @@ export const formatManagersData = (response) => {
             firstName,
             lastName,
             name,
-            accountId:data.relationships.account.data.id,
-            profileColor:getRandomColor()
+            accountId: data.relationships.account.data.id,
+            profileColor: _getRandomColor()
         })
     })
     formattedResponse.forEach((data) => {
@@ -26,5 +26,6 @@ export const formatManagersData = (response) => {
         })
         data.email = filteredObject[0].attributes.email;
     })
+    console.log(formattedResponse)
     return formattedResponse;
 }
