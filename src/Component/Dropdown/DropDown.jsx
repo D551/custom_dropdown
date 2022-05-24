@@ -14,6 +14,7 @@ const ManagersDropDown = (
     const [_options, _setOptions] = React.useState(options);
     const [showDropdown, setShowDropdown] = React.useState(false);
     const [textValue, setTextValue] = React.useState('');
+    const [focusedElement, setFocusedElement] = React.useState(0);
 
     const getSeletedListText = (e) => {
         setTextValue(e.target.value);
@@ -21,6 +22,20 @@ const ManagersDropDown = (
         const selectedOption = options.filter((x) => { return x.id === e.target.id })
         onChange(selectedOption[0]);
     }
+
+    const onKeyDown = (e) => {
+        const index = options.findIndex(x => {
+            return x.id === focusedElement;
+        });
+        if (e.which === 40) {
+            const selected = options[index + 1]?.id;
+            selected && document.getElementById(selected).focus();
+        }
+        else if (e.which === 38) {
+            const selected = options[index - 1]?.id
+            selected && document.getElementById(selected).focus();
+        }
+    };
 
     const createOptionsList = (info) => {
         return (
@@ -30,6 +45,8 @@ const ManagersDropDown = (
                 onClick={!info.notClickable ? getSeletedListText : () => { }}
                 value={info.name}
                 id={info.id}
+                aria-label={info.name}
+                onFocus={() => { setFocusedElement(info.id) }}
             >
                 {
                     info.firstName && info.lastName &&
@@ -91,6 +108,7 @@ const ManagersDropDown = (
                     value={textValue}
                     placeholder={placeholder}
                     data-testid="input-box"
+                    onKeyDown={() => { document.getElementById(options[0].id).focus() }}
                 />
                 <i className={showDropdown ? 'arrow up' : 'arrow down'}
                     onClick={() => { setShowDropdown(!showDropdown) }}
@@ -98,7 +116,7 @@ const ManagersDropDown = (
             </div >
             {
                 showDropdown &&
-                <div className='list-container' data-testid="list-container">
+                <div className='list-container' data-testid="list-container" onKeyDown={onKeyDown}>
                     {
                         _options?.map((manager) => {
                             return createOptionsList(manager)

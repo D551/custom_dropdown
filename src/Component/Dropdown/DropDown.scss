@@ -98,11 +98,11 @@
       margin-left: 10px;
     }
 
-    .list-card:hover {
+    .list-card:hover ,.list-card:focus {
       background: #e7fafa;
     }
 
-    .list-card:hover span.users-info {
+    .list-card:hover span.users-info, .list-card:focus span.users-info {
       color: rgb(84, 168, 140);
       pointer-events: none;
     }
