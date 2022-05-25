@@ -22,7 +22,7 @@ You may also see any lint errors in the console.
 
 Launches the test runner in the interactive watch mode.
 
-#Tech Stack used
+### `Tech Stack used`
 React Version - 18
 Testing Library - React testing library
 
