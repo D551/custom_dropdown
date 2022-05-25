@@ -1,4 +1,4 @@
-# Getting Started with Create React App
+# Managers Live Search
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
@@ -21,6 +21,11 @@ You may also see any lint errors in the console.
 ### `npm test`
 
 Launches the test runner in the interactive watch mode.
+
+#Tech Stack used
+React Version - 18
+Testing Library - React testing library
+
 
 
 
